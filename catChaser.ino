@@ -34,10 +34,14 @@ class Ping {
     pinMode(_inputPingPin, INPUT);
   }
   
-  void turnPinger(bool direction){
-    //code for turning the pinger left or right
-    //i've seen that thing move.
-    //no idea how it worked
+  void turnPinger(char direction){
+    
+    if (direction == 'left') {
+     //move the pinger to the left 
+    } else if (direction == 'right'){
+    //move it to the right
+    }
+     
   }
   
   //taken from http://arduino.cc/en/Tutorial/ping
@@ -86,23 +90,40 @@ void setup() {
 }
 
 void loop() {
+  
   long distanceToObject; 
   
-  //theres a lot of repitition here. I'm certian theres a more concise way to write this.
-  if (left.motion_detected()) {
-    pinger.turnPinger(false);
-    distanceToObject = pinger.getDistance();
-    Serial.print('Movement Detected on the left, inches: ');
-    Serial.print(distanceToObject);
-    //move towards movement
+  char most_recent;
+  bool left_movement;
+  bool right_movement;
+  
+  //wait until movement has stopped for 2 secs before actually moving that way.
+  for (int i = 0; i <= 1; i++) {
+     left_movement = left.motion_detected();
+     right_movement = right.motion_detected();
+    if (left_movement || right_movement) {
+      i = 0;
+      //ternary operator, very slick.
+      most_recent = (left_movement ? 'left' : 'right');
+      delay(1000);
+      continue;
+    } else {
+      i++;
+      delay(1000);
+      continue;
+    }
   }
-  if (right.motion_detected()) {
-    pinger.turnPinger(true);
+  //after no movement for 2 seconds,
+  //if there has been any movement at all since the last time you moved
+  //explicit checks on value.
+  if (!most_recent == 'left' || !most_recent == 'right'){
+    pinger.turnPinger(most_recent);
     distanceToObject = pinger.getDistance();
-    Serial.print('Movement Detected on the right, inches: ');
-    Serial.print(distanceToObject);
-    //movetowards movement
-  } 
+    
+    Serial.print('Recent movement on the ' 
+    + most_recent + '. Distance of ' + char(distanceToObject) + 'inches.');
+   //ideally, move the bot towards the most recent movement 
+  }
   Serial.print('No motion Detected');
   delay(1000);
   
