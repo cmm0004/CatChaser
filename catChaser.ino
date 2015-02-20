@@ -116,7 +116,7 @@ void loop() {
   //after no movement for 2 seconds,
   //if there has been any movement at all since the last time you moved
   //explicit checks on value.
-  if (!most_recent == 'left' || !most_recent == 'right'){
+  if (most_recent == 'left' || most_recent == 'right'){
     pinger.turnPinger(most_recent);
     distanceToObject = pinger.getDistance();
     
