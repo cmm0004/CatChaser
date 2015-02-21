@@ -104,7 +104,7 @@ void loop() {
     if (left_movement || right_movement) {
       i = 0;
       //ternary operator, very slick.
-      most_recent = (left_movement ? 'left' : 'right');
+      most_recent = left_movement ? 'left' : 'right';
       delay(1000);
       continue;
     } else {
